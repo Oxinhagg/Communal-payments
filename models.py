@@ -1,7 +1,10 @@
 from sqlalchemy import Integer, Float, Column, create_engine, ForeignKey,MetaData, Date
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
 
-class Tariffs(object):
+Base = declarative_base()
+
+class Tariffs(Base):
     __tablename__ = 'tariffs'
     id = Column(Integer, primary_key=True, nullable=False)
     date_begin = Column(Date, nullable=False)
@@ -14,7 +17,7 @@ class Tariffs(object):
     def __init__(self, *args, **kwargs):
         super(Tariffs, self).__init__(*args, **kwargs)    
 
-class Payment(object):
+class Payment(Base):
     __tablename__ = 'payment'
     id = Column(Integer, primary_key=True, nullable=False)
     payment_date = Column(Date, nullable=False)
@@ -36,7 +39,7 @@ class Payment(object):
     def __repr__(self):
         return '<Payment id: {}, date: {}>'.format(self.id, self.payment_date)
 
-class MeterReading(object):
+class MeterReading(Base):
     __tablename__ = 'meterreding'
     id = Column(Integer, primary_key =True)
     child_id = Column(Integer, ForeignKey('payment.id'))
@@ -48,3 +51,6 @@ class MeterReading(object):
         super(MeterReading, self).__init__(*args, **kwargs)
 
 engine = create_engine('sqlite:///:memory:', echo=True)
+
+if __name__ == '__main__':
+    Base.metadata.create_all(engine)
